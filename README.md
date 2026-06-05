@@ -1,140 +1,343 @@
-CarIQ — Used Car Price Prediction
+# 🚗 CarIQ — Used Car Price Prediction
 
-A machine learning web application that predicts used car prices based on vehicle features, with an interactive dashboard for browsing and filtering cars.
-Screenshot 2026-04-12 185935.png
-Screenshot 2026-04-12 185537.png
+A machine learning web application that predicts used car prices based on vehicle features, with an interactive dashboard for browsing, filtering, and analyzing cars.
 
-Project Overview
+## 📸 Screenshots
 
-CarIQ is a two-page Streamlit web application powered by a tuned Random Forest Regressor trained on the CarDekho used car dataset (~15,000 records). Users can browse and filter available cars, view market insights through interactive charts, and get an instant AI-based price prediction by entering vehicle specifications.
+### Dashboard
 
-Problem Statement
+![Dashboard](images/dashboard.png)
 
-The used car market in India is highly unstructured — prices for similar cars can vary by lakhs depending on the seller, location, and negotiation. Buyers often overpay and sellers underprice due to lack of data-driven guidance.
-Goal: Build a regression model that accurately estimates the fair market price of a used car based on its age, mileage, engine specs, fuel type, and other features — and deploy it as an accessible web application.
+### Price Predictor
 
-Approach
+![Price Predictor](images/predictor.png)
 
-The project follows a complete end-to-end ML workflow:
+---
 
-Data Collection → EDA → Feature Engineering → Model Training
-→ Model Comparison → Hyperparameter Tuning → Model Saving → Streamlit Deployment
+# 📌 Project Overview
 
-Step 1 — Data Collection
+CarIQ is a two-page Streamlit web application powered by a tuned Random Forest Regressor trained on the CarDekho used car dataset (~15,000 records).
 
-Downloaded the CarDekho dataset programmatically from GitHub using urllib. Dataset contains used car listings with price, specifications, and seller information.
+Users can:
 
-Step 2 — Exploratory Data Analysis (EDA)
+* Browse and filter available cars
+* Explore market insights through interactive charts
+* View key business metrics
+* Receive instant AI-powered price predictions
 
-Univariate analysis: KDE plots and box plots for all numerical features to understand distributions and detect outliers
-Categorical analysis: Count plots for brand, seller type, fuel type, transmission type
-Bivariate analysis: Scatter plots of each feature vs. selling price to identify linear and non-linear relationships
-Correlation heatmap: Identified max_power, engine, and vehicle_age as the strongest price predictors
-Chi-squared tests: Validated statistical significance of all categorical features against selling price
-Business insights: Top 10 most sold cars (Hyundai i20 leads), top brands (Maruti dominates), highest-mileage brands, most expensive listings
+The project demonstrates a complete end-to-end machine learning workflow from data collection to deployment.
 
-Step 3 — Feature Engineering
+---
 
-Dropped high-cardinality text columns: car_name, brand, model (not useful for ML directly)
-Applied one-hot encoding on: seller_type (3 categories), fuel_type (5 categories), transmission_type (2 categories)
-Final feature matrix: 16 input features
+# 🎯 Problem Statement
 
-Step 4 — Feature Importance
+The used car market in India is highly unstructured. Prices for similar vehicles can vary significantly depending on factors such as seller type, location, mileage, and vehicle condition.
 
-Used ExtraTreesRegressor to rank feature importance before model training. Top features: max_power, engine, km_driven, vehicle_age, mileage.
+As a result:
 
-Step 5 — Model Training & Comparison
+* Buyers may overpay
+* Sellers may underprice vehicles
+* Price estimation becomes subjective
 
-Trained 6 regression models on an 80/20 train-test split and compared performance:
-ModelR² ScoreNotesLinear RegressionLowAssumes linearity — poor fit for car pricesRidge RegressionLowL2 regularization, still linearLasso RegressionLowL1 regularization, still linearSupport Vector RegressionLowStruggles with large, noisy datasetsDecision Tree RegressorModerateOverfits without pruningRandom Forest Regressor (Tuned)BestEnsemble method — handles non-linearity and outliers well
+### Goal
 
-Step 6 — Hyperparameter Tuning
+Build a regression model capable of accurately estimating the fair market value of a used car using vehicle specifications and deploy it through an easy-to-use web application.
 
-Applied RandomizedSearchCV on RandomForestRegressor with:
+---
 
-100 iterations, 3-fold cross-validation
-Search space: n_estimators [100–500], max_depth [None, 10–50], min_samples_split [2,5,10], min_samples_leaf [1,2,4], max_features ['sqrt','log2'], bootstrap [True, False]
-Best estimator saved as best_model.pkl
+# 🔄 Approach
 
-Step 7 — Deployment
-Built a two-page Streamlit app with background image, custom CSS, sidebar filters, KPI cards, charts, and a prediction form.
+The project follows a complete machine learning lifecycle:
 
- Tech Stack
- 
-LibraryVersionPurposePython3.8+Core languageStreamlitLatestWeb application frameworkScikit-learnLatestML models, RandomizedSearchCV, metricsPandasLatestData loading, filtering, manipulationNumPyLatestNumerical arrays, input encodingMatplotlibLatestStatic visualizations in notebookSeabornLatestStatistical plots — KDE, heatmap, scatterPlotlyLatestInteractive plotsSciPyLatestChi-squared statistical testsPickleBuilt-inModel serialization and loading
+**Data Collection → EDA → Feature Engineering → Model Training → Model Comparison → Hyperparameter Tuning → Model Saving → Streamlit Deployment**
 
- Dataset
- 
-PropertyDetailSourceCarDekho (via GitHub)Size~15,000 recordsTargetselling_price (₹)Numerical featuresvehicle_age, km_driven, mileage, engine, max_power, seatsCategorical featuresseller_type, fuel_type, transmission_type
+---
 
-Application Pages
+# 📊 Step 1 — Data Collection
 
-Page 1 — CarIQ Dashboard (by22.py)
-The main landing page for car browsing and market exploration.
-Sidebar filters:
+* Downloaded the CarDekho dataset programmatically using Python.
+* Dataset contains approximately 15,000 used car listings.
 
-Price Range (slider)
-Location, Brand, Fuel Type, Transmission, Seats (multi-select)
+### Key Attributes
 
-Features:
+* Selling Price
+* Vehicle Age
+* KM Driven
+* Mileage
+* Engine
+* Max Power
+* Fuel Type
+* Transmission Type
+* Seller Type
+* Seats
 
-🏆 Best car suggestion from filtered results (lowest price)
-📊 KPI cards — Avg Price, Min Price, Max Price, Best Mileage
-📋 Top 20 filtered cars table
-📈 Bar charts — Cars by Brand, Fuel Type Distribution
-🎯 Car selector → navigates to Price Predictor page
+---
 
-Page 2 — Price Predictor (appcv5.py)
-AI-powered price prediction form.
-Inputs: Vehicle Age, KM Driven, Mileage, Engine CC, Max Power, Seats, Seller Type, Fuel Type, Transmission
-Output: Estimated price in ₹ (auto-formatted as Lakhs or Crores)
+# 🔍 Step 2 — Exploratory Data Analysis (EDA)
 
- Run Locally
- 
-1. Clone the repository
-bashgit clone https://github.com/chandrikaj631/car-price-prediction.git
+### Univariate Analysis
+
+* KDE plots
+* Box plots
+* Distribution analysis
+* Outlier detection
+
+### Categorical Analysis
+
+* Brand distribution
+* Seller type analysis
+* Fuel type distribution
+* Transmission type distribution
+
+### Bivariate Analysis
+
+* Feature vs Selling Price relationships
+* Scatter plots
+* Trend identification
+
+### Correlation Analysis
+
+Strongest predictors identified:
+
+* Max Power
+* Engine
+* Vehicle Age
+
+### Business Insights
+
+* Top-selling car models
+* Most popular brands
+* Highest mileage brands
+* Most expensive listings
+
+---
+
+# ⚙️ Step 3 — Feature Engineering
+
+### Removed Features
+
+* car_name
+* brand
+* model
+
+### One-Hot Encoding Applied
+
+* seller_type
+* fuel_type
+* transmission_type
+
+### Final Dataset
+
+* 16 input features
+
+---
+
+# 🌟 Step 4 — Feature Importance
+
+Used ExtraTreesRegressor to identify influential features.
+
+### Top Features
+
+1. Max Power
+2. Engine
+3. KM Driven
+4. Vehicle Age
+5. Mileage
+
+---
+
+# 🤖 Step 5 — Model Training & Comparison
+
+| Model                     | Performance | Notes                             |
+| ------------------------- | ----------- | --------------------------------- |
+| Linear Regression         | Low         | Assumes linear relationship       |
+| Ridge Regression          | Low         | L2 regularization                 |
+| Lasso Regression          | Low         | L1 regularization                 |
+| Support Vector Regression | Low         | Struggles with large datasets     |
+| Decision Tree Regressor   | Moderate    | Overfitting tendency              |
+| Random Forest Regressor   | Best        | Handles non-linearity effectively |
+
+### Selected Model
+
+✅ Tuned Random Forest Regressor
+
+---
+
+# 🎯 Step 6 — Hyperparameter Tuning
+
+Applied RandomizedSearchCV with:
+
+* 100 iterations
+* 3-fold cross-validation
+
+### Tuned Parameters
+
+* n_estimators
+* max_depth
+* min_samples_split
+* min_samples_leaf
+* max_features
+* bootstrap
+
+### Output
+
+```text
+best_model.pkl
+```
+
+---
+
+# 🚀 Step 7 — Deployment
+
+Developed a two-page Streamlit application with:
+
+* Custom CSS
+* Background image
+* Interactive filters
+* KPI cards
+* Dynamic charts
+* AI-based price prediction
+
+---
+
+# 🛠️ Tech Stack
+
+| Technology   | Purpose             |
+| ------------ | ------------------- |
+| Python       | Core Programming    |
+| Streamlit    | Web Application     |
+| Pandas       | Data Manipulation   |
+| NumPy        | Numerical Computing |
+| Scikit-learn | Machine Learning    |
+| Matplotlib   | Visualizations      |
+| Seaborn      | Statistical Plots   |
+| Plotly       | Interactive Charts  |
+| SciPy        | Statistical Testing |
+| Pickle       | Model Serialization |
+
+---
+
+# 📂 Dataset
+
+| Property             | Detail                                                    |
+| -------------------- | --------------------------------------------------------- |
+| Source               | CarDekho Dataset                                          |
+| Size                 | ~15,000 Records                                           |
+| Target Variable      | selling_price                                             |
+| Numerical Features   | vehicle_age, km_driven, mileage, engine, max_power, seats |
+| Categorical Features | seller_type, fuel_type, transmission_type                 |
+
+---
+
+# 📱 Application Pages
+
+## Page 1 — CarIQ Dashboard
+
+### Features
+
+* Price Range Filter
+* Brand Filter
+* Fuel Type Filter
+* Transmission Filter
+* Seat Filter
+* Best Car Recommendation
+* KPI Cards
+* Interactive Charts
+* Top 20 Cars Table
+
+### Visualizations
+
+* Cars by Brand
+* Fuel Type Distribution
+* Price Analysis
+
+---
+
+## Page 2 — Price Predictor
+
+### Inputs
+
+* Vehicle Age
+* KM Driven
+* Mileage
+* Engine
+* Max Power
+* Seats
+* Seller Type
+* Fuel Type
+* Transmission Type
+
+### Output
+
+* Estimated Used Car Price
+* Auto-formatted in Lakhs or Crores
+
+---
+
+# ▶️ Run Locally
+
+## Clone Repository
+
+```bash
+git clone https://github.com/chandrikaj631/car-price-prediction.git
 cd car-price-prediction
-2. Install dependencies
-bashpip install -r requirements.txt
-3. Generate the trained model
+```
 
- best_model.pkl is not included due to GitHub's 100MB file size limit. Run the notebook to regenerate it:
+## Install Dependencies
 
-bashjupyter notebook cardekho__1_.ipynb
-Run all cells — the last cell saves best_model.pkl to your working directory.
-4. Launch the app
-bashstreamlit run by22.py
+```bash
+pip install -r requirements.txt
+```
 
- requirements.txt
-streamlit
-pandas
-numpy
-scikit-learn
-matplotlib
-seaborn
-plotly
-scipy
-jupyter
-pickle-mixin
+## Generate Model
 
-📁 Project Structure
+Run:
+
+```bash
+jupyter notebook cardekho__1_.ipynb
+```
+
+Execute all cells to generate:
+
+```text
+best_model.pkl
+```
+
+## Launch Application
+
+```bash
+streamlit run by22.py
+```
+
+---
+
+# 📁 Project Structure
+
+```text
 car-price-prediction/
-├── by22.py                    # Page 1 — CarIQ Dashboard
+
+├── by22.py
 ├── pages/
-│   └── appcv5.py              # Page 2 — Price Predictor
-├── cardekho__1_.ipynb         # EDA + model training notebook
-├── car_data.csv               # Processed dataset
-├── car_bg.jpg                 # App background image
-├── logo.png                   # CarIQ logo
-├── requirements.txt           # Python dependencies
+│   └── appcv5.py
+├── cardekho__1_.ipynb
+├── car_data.csv
+├── car_bg.jpg
+├── logo.png
+├── requirements.txt
 └── README.md
+```
 
- Future Improvements
+---
 
- Deploy on Streamlit Cloud (free hosting)
- Display model accuracy metrics (R², RMSE) inside the app
- Add SHAP explainability — show which features drove each prediction
- Include location-based price adjustment
- Add car image lookup by model name
- Integrate live CarDekho API for real-time listings
+# 🔮 Future Improvements
+
+* Streamlit Cloud Deployment
+* SHAP Explainability
+* Model Performance Dashboard
+* Location-Based Pricing
+* Car Image Lookup
+* Real-Time CarDekho Integration
+
+---
+
 
