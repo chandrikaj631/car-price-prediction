@@ -5,12 +5,11 @@ A machine learning web application that predicts used car prices based on vehicl
 ## 📸 Screenshots
 
 ### Dashboard
-
-![Dashboard](Screenshot 2026-04-12 185537.png/dashboard.png)
+![Dashboard](images/Screenshot%202026-04-12%20185537.png)
 
 ### Price Predictor
+![Price Predictor](images/Screenshot%202026-04-12%20185935.png)
 
-![Price Predictor](Screenshot 2026-04-12 185935.png/predictor.png)
 
 ---
 
